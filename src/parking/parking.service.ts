@@ -109,6 +109,25 @@ return { allocated_slot_number: slot };
       .filter(([_, car]) => car.color.toLowerCase() === color.toLowerCase())
       .map(([slot]) => slot);
   }
+  parkMultipleCars(cars: Car[]): { registrationNumber: string; allocated_slot_number: number }[] {
+    const responses = [];
+  
+    for (const car of cars) {
+      if (this.availableSlots.isEmpty()) {
+        responses.push({
+          registrationNumber: car.registrationNumber,
+          allocated_slot_number: -1,
+        });
+        continue;
+      }
+  
+      const slot = this.availableSlots.extractMin()!;
+      this.parkingMap.set(slot, car);
+      responses.push({ registrationNumber: car.registrationNumber, allocated_slot_number: slot });
+    }
+  
+    return responses;
+  }
   
 
 }

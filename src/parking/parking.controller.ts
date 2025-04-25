@@ -57,5 +57,14 @@ getSlotNumbersByColor(@Param('color') color: string) {
   return this.parkingService.getSlotNumbersByColor(color);
 }
 
+@Post('park/multiple')
+parkMultipleCars(@Body() cars: ParkCarDto[]) {
+  const mappedCars = cars.map(car => ({
+    registrationNumber: car.car_reg_no,
+    color: car.car_color,
+  }));
+  return this.parkingService.parkMultipleCars(mappedCars);
+}
+
 
 }
