@@ -66,5 +66,9 @@ parkMultipleCars(@Body() cars: ParkCarDto[]) {
   return this.parkingService.parkMultipleCars(mappedCars);
 }
 
+@Get('summary')
+getParkingLotSummary() {
+  return this.parkingService.getSummary();
+}
 
 }

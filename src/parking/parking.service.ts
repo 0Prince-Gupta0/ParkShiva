@@ -128,6 +128,17 @@ return { allocated_slot_number: slot };
   
     return responses;
   }
+
+  getSummary() {
+    const occupied = this.parkingMap.size;
+    const available = this.totalSlots - occupied;
+    return {
+      total_slots: this.totalSlots,
+      occupied_slots: occupied,
+      available_slots: available,
+    };
+  }
+  
   
 
 }
