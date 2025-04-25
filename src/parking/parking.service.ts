@@ -76,4 +76,17 @@ return { allocated_slot_number: slot };
     return { freed_slot_number: slot };
   }
   
+
+  getOccupiedSlots() {
+    const result = [];
+    for (const [slot, car] of this.parkingMap.entries()) {
+      result.push({
+        slot_no: slot,
+        registration_no: car.registrationNumber,
+        color: car.color,
+      });
+    }
+    return result.sort((a, b) => a.slot_no - b.slot_no);
+  }
+  
 }

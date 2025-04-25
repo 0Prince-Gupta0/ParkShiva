@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Patch, BadRequestException } from '@nestjs/common';
+import { Body, Controller, Post, Get,  Patch, BadRequestException } from '@nestjs/common';
 import { ParkingService } from './parking.service'
 import { ParkCarDto } from './dto/park-car.dto';
 
@@ -35,4 +35,9 @@ export class ParkingController {
     return this.parkingService.clearSlot(body);
   }
   
+
+  @Get('status')
+getStatus() {
+  return this.parkingService.getOccupiedSlots();
+}
 }
