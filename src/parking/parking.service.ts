@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Car } from './interfaces/car.interface';
 import { MinHeap } from '../common/utils/min-heap';
 
@@ -15,45 +19,46 @@ export class ParkingService {
 
   initializeParkingLot(noOfSlots: number): { total_slot: number } {
     this.totalSlots = 0;
-    this.availableSlots = new MinHeap(); 
-    this.parkingMap.clear();             
-  
+    this.availableSlots = new MinHeap();
+    this.parkingMap.clear();
+
     for (let i = 1; i <= noOfSlots; i++) {
       this.availableSlots.insert(i);
     }
     this.totalSlots = noOfSlots;
     return { total_slot: this.totalSlots };
   }
-  
 
   expandParkingLot(increment: number): { total_slot: number } {
     const start = this.totalSlots + 1;
     const end = this.totalSlots + increment;
-  
+
     for (let i = start; i <= end; i++) {
       this.availableSlots.insert(i);
     }
-  
+
     this.totalSlots += increment;
     return { total_slot: this.totalSlots };
-  }  
+  }
 
   parkCar(car: Car): { allocated_slot_number: number } {
     if (this.availableSlots.isEmpty()) {
       throw new Error('Parking lot is full');
     }
-  
+
     const slot = this.availableSlots.extractMin();
-if (slot === null) {
-  throw new Error('Parking lot is full');
-}
-this.parkingMap.set(slot, car);
-return { allocated_slot_number: slot };
+    if (slot === null) {
+      throw new Error('Parking lot is full');
+    }
+    this.parkingMap.set(slot, car);
+    return { allocated_slot_number: slot };
   }
 
-  clearSlot(payload: { slot_number?: number; car_registration_no?: string }): { freed_slot_number: number } {
+  clearSlot(payload: { slot_number?: number; car_registration_no?: string }): {
+    freed_slot_number: number;
+  } {
     let slot: number | null = null;
-  
+
     if (payload.slot_number !== undefined) {
       if (!this.parkingMap.has(payload.slot_number)) {
         throw new BadRequestException('Slot already free or does not exist');
@@ -68,14 +73,15 @@ return { allocated_slot_number: slot };
       }
       if (slot === null) throw new BadRequestException('Car not found');
     } else {
-      throw new BadRequestException('Provide either slot_number or car_registration_no');
+      throw new BadRequestException(
+        'Provide either slot_number or car_registration_no',
+      );
     }
-  
+
     this.parkingMap.delete(slot);
     this.availableSlots.insert(slot);
     return { freed_slot_number: slot };
   }
-  
 
   getOccupiedSlots() {
     const result = [];
@@ -88,12 +94,11 @@ return { allocated_slot_number: slot };
     }
     return result.sort((a, b) => a.slot_no - b.slot_no);
   }
-  
 
   getRegistrationNumbersByColor(color: string): string[] {
     return Array.from(this.parkingMap.values())
-      .filter(car => car.color.toLowerCase() === color.toLowerCase())
-      .map(car => car.registrationNumber);
+      .filter((car) => car.color.toLowerCase() === color.toLowerCase())
+      .map((car) => car.registrationNumber);
   }
   getSlotByRegistration(regNo: string): { slot_number: number } {
     for (const [slot, car] of this.parkingMap.entries()) {
@@ -109,9 +114,11 @@ return { allocated_slot_number: slot };
       .filter(([_, car]) => car.color.toLowerCase() === color.toLowerCase())
       .map(([slot]) => slot);
   }
-  parkMultipleCars(cars: Car[]): { registrationNumber: string; allocated_slot_number: number }[] {
+  parkMultipleCars(
+    cars: Car[],
+  ): { registrationNumber: string; allocated_slot_number: number }[] {
     const responses = [];
-  
+
     for (const car of cars) {
       if (this.availableSlots.isEmpty()) {
         responses.push({
@@ -120,12 +127,15 @@ return { allocated_slot_number: slot };
         });
         continue;
       }
-  
+
       const slot = this.availableSlots.extractMin()!;
       this.parkingMap.set(slot, car);
-      responses.push({ registrationNumber: car.registrationNumber, allocated_slot_number: slot });
+      responses.push({
+        registrationNumber: car.registrationNumber,
+        allocated_slot_number: slot,
+      });
     }
-  
+
     return responses;
   }
 
@@ -138,7 +148,4 @@ return { allocated_slot_number: slot };
       available_slots: available,
     };
   }
-  
-  
-
 }

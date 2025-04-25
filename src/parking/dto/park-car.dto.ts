@@ -9,4 +9,3 @@ export class ParkCarDto {
   @IsString()
   car_color!: string;
 }
-
