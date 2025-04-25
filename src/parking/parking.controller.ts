@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Patch, BadRequestException } from '@nestjs/common';
-import { ParkingService } from './parking.service';
+import { ParkingService } from './parking.service'
+import { ParkCarDto } from './dto/park-car.dto';
 
 @Controller()
 export class ParkingController {
@@ -18,4 +19,16 @@ export class ParkingController {
     }
     return this.parkingService.expandParkingLot(increment);
   }
+
+
+  @Post('park')
+  parkCar(@Body() parkCarDto: ParkCarDto) {
+    const car = {
+      registrationNumber: parkCarDto.car_reg_no,
+      color: parkCarDto.car_color,
+    };
+    return this.parkingService.parkCar(car);
+  }
+  
+
 }

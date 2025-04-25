@@ -36,6 +36,18 @@ export class ParkingService {
   
     this.totalSlots += increment;
     return { total_slot: this.totalSlots };
-  }
+  }  
+
+  parkCar(car: Car): { allocated_slot_number: number } {
+    if (this.availableSlots.isEmpty()) {
+      throw new Error('Parking lot is full');
+    }
   
+    const slot = this.availableSlots.extractMin();
+if (slot === null) {
+  throw new Error('Parking lot is full');
+}
+this.parkingMap.set(slot, car);
+return { allocated_slot_number: slot };
+  }
 }
