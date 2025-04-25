@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get,  Patch, BadRequestException } from '@nestjs/common';
+import { Body, Controller, Post, Get,  Patch, BadRequestException, Param } from '@nestjs/common';
 import { ParkingService } from './parking.service'
 import { ParkCarDto } from './dto/park-car.dto';
 
@@ -40,4 +40,12 @@ export class ParkingController {
 getStatus() {
   return this.parkingService.getOccupiedSlots();
 }
+
+
+
+@Get('registration_numbers/:color')
+getRegistrationNumbers(@Param('color') color: string) {
+  return this.parkingService.getRegistrationNumbersByColor(color);
+}
+
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Car } from './interfaces/car.interface';
 import { MinHeap } from '../common/utils/min-heap';
 
@@ -89,4 +89,12 @@ return { allocated_slot_number: slot };
     return result.sort((a, b) => a.slot_no - b.slot_no);
   }
   
+
+  getRegistrationNumbersByColor(color: string): string[] {
+    return Array.from(this.parkingMap.values())
+      .filter(car => car.color.toLowerCase() === color.toLowerCase())
+      .map(car => car.registrationNumber);
+  }
+
+
 }
