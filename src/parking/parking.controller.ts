@@ -48,4 +48,14 @@ getRegistrationNumbers(@Param('color') color: string) {
   return this.parkingService.getRegistrationNumbersByColor(color);
 }
 
+@Get('slot_number/:reg_no')
+getSlotByRegistrationNumber(@Param('reg_no') regNo: string) {
+  return this.parkingService.getSlotByRegistration(regNo);
+}
+@Get('slot_numbers/:color')
+getSlotNumbersByColor(@Param('color') color: string) {
+  return this.parkingService.getSlotNumbersByColor(color);
+}
+
+
 }

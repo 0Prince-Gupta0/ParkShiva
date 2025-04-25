@@ -95,6 +95,20 @@ return { allocated_slot_number: slot };
       .filter(car => car.color.toLowerCase() === color.toLowerCase())
       .map(car => car.registrationNumber);
   }
+  getSlotByRegistration(regNo: string): { slot_number: number } {
+    for (const [slot, car] of this.parkingMap.entries()) {
+      if (car.registrationNumber === regNo) {
+        return { slot_number: slot };
+      }
+    }
+    throw new NotFoundException('Car with registration number not found');
+  }
 
+  getSlotNumbersByColor(color: string): number[] {
+    return Array.from(this.parkingMap.entries())
+      .filter(([_, car]) => car.color.toLowerCase() === color.toLowerCase())
+      .map(([slot]) => slot);
+  }
+  
 
 }
