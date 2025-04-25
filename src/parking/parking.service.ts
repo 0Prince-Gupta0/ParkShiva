@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Car } from './interfaces/car.interface';
 import { MinHeap } from '../common/utils/min-heap';
 
@@ -50,4 +50,30 @@ if (slot === null) {
 this.parkingMap.set(slot, car);
 return { allocated_slot_number: slot };
   }
+
+  clearSlot(payload: { slot_number?: number; car_registration_no?: string }): { freed_slot_number: number } {
+    let slot: number | null = null;
+  
+    if (payload.slot_number !== undefined) {
+      if (!this.parkingMap.has(payload.slot_number)) {
+        throw new BadRequestException('Slot already free or does not exist');
+      }
+      slot = payload.slot_number;
+    } else if (payload.car_registration_no) {
+      for (const [key, car] of this.parkingMap.entries()) {
+        if (car.registrationNumber === payload.car_registration_no) {
+          slot = key;
+          break;
+        }
+      }
+      if (slot === null) throw new BadRequestException('Car not found');
+    } else {
+      throw new BadRequestException('Provide either slot_number or car_registration_no');
+    }
+  
+    this.parkingMap.delete(slot);
+    this.availableSlots.insert(slot);
+    return { freed_slot_number: slot };
+  }
+  
 }

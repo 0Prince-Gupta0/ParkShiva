@@ -30,5 +30,9 @@ export class ParkingController {
     return this.parkingService.parkCar(car);
   }
   
-
+  @Post('clear')
+  clearSlot(@Body() body: { slot_number?: number; car_registration_no?: string }) {
+    return this.parkingService.clearSlot(body);
+  }
+  
 }
