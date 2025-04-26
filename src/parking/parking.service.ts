@@ -23,6 +23,16 @@ import {
       }
     }
   
+    private checkCarRegistrationUnique(registrationNo: string) {
+      for (const car of this.parkingMap.values()) {
+        if (car.registrationNumber === registrationNo) {
+          throw new BadRequestException(
+            `Car with registration number ${registrationNo} is already parked`,
+          );
+        }
+      }
+    }
+  
     initializeParkingLot(noOfSlots: number): { total_slot: number } {
       if (noOfSlots <= 0) {
         throw new BadRequestException('Number of slots must be greater than zero');
@@ -59,6 +69,8 @@ import {
   
     parkCar(car: Car): { allocated_slot_number: number } {
       this.checkIfInitialized();
+  
+      this.checkCarRegistrationUnique(car.registrationNumber);
   
       if (this.availableSlots.isEmpty()) {
         throw new BadRequestException('Parking lot is full');
@@ -167,6 +179,9 @@ import {
       const responses = [];
   
       for (const car of cars) {
+        // Check if the registration number is already taken
+        this.checkCarRegistrationUnique(car.registrationNumber);
+  
         if (this.availableSlots.isEmpty()) {
           responses.push({
             registrationNumber: car.registrationNumber,
